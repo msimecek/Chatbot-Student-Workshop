@@ -582,8 +582,9 @@ Možná další rozšíření:
 
 * Použít RootDialog jako rozcestník, který nabídne uživateli, zda chce raději znát odpověď na otázku, nebo se učit jména.
 * Načítat fotky a jména lidí dynamicky, například z Office 365.
-* Napojit chatbota na skutečné kanály - Skype, Slack, Web...
+* Napojit chatbota na skutečné kanály - Skype, Slack, Web... (K tomu je potřeba mít bota publikovaného na internet.)
 
 ## Další zdroje
 
 * [oficiální dokumentace](https://docs.microsoft.com/en-us/bot-framework/)
+* [nastavení komunikačních kanálů](https://docs.microsoft.com/en-us/bot-framework/bot-service-manage-channels)
