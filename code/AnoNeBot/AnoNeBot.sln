@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnoNeBot", "AnoNeBot\AnoNeBot.csproj", "{14078E48-49F5-4D4E-90FA-96C41132AF05}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{14078E48-49F5-4D4E-90FA-96C41132AF05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14078E48-49F5-4D4E-90FA-96C41132AF05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14078E48-49F5-4D4E-90FA-96C41132AF05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14078E48-49F5-4D4E-90FA-96C41132AF05}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BBCE8D11-1D51-4113-B1B1-82146CB96BBA}
+	EndGlobalSection
+EndGlobal
