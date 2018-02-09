@@ -11,6 +11,8 @@ V tomto workshopu se naučíte, jak vytvořit vlastního chatbota pomocí nástr
 
 Přestože si v tomto cvičení vystačíte s kopírováním zdrojového kódu, bude lepší, když budete mít alespoň **základní znalost jazyka C#**.
 
+Je dobré mít také základní povědomí o fungování a tvorbě webových aplikací.
+
 Pro čtení dokumentace, hledání řešení na problémy při vývoji a programování obecně je vhodné ovládat **angličtinu**.
 
 ## Výstup
