@@ -1,5 +1,5 @@
 ---
-typora-root-url: images
+
 typora-copy-images-to: images
 ---
 
@@ -9,11 +9,21 @@ V tomto workshopu se naučíte, jak vytvořit vlastního chatbota pomocí nástr
 
 ## Předpoklady
 
-ABCD (znalost C# apod.)
+Přestože si v tomto cvičení vystačíte s kopírováním zdrojového kódu, bude lepší, když budete mít alespoň **základní znalost jazyka C#**.
+
+Pro čtení dokumentace, hledání řešení na problémy při vývoji a programování obecně je vhodné ovládat **angličtinu**.
 
 ## Výstup
 
-= dva screenshoty + popis
+Na konci tohoto cvičení budete mít chatbota se dvěma funkcionalitami:
+
+*Odpověď Ano/Ne na libovolnou otázku*
+
+![1518006751354](images/1518006751354.png)
+
+*Hádání jména podle obličeje*
+
+![1518107478717](images/1518107478717.png)
 
 ## Příprava
 
@@ -21,11 +31,11 @@ ABCD (znalost C# apod.)
 
 Při instalaci vyberte hlavně **ASP.NET and web development**:
 
-![1517995366078](/1517995366078.png)
+![1517995366078](images/1517995366078.png)
 
 [Stáhněte](https://github.com/Microsoft/BotFramework-Emulator/releases) a nainstalujte si Bot Framework Emulator. Vyberte aktuální verzi, *Setup ... exe*:
 
-![1517995547064](/1517995547064.png)
+![1517995547064](images/1517995547064.png)
 
 Stáhněte si šablony [projektu](http://aka.ms/bf-bc-vstemplate) a souborů ([controller](http://aka.ms/bf-bc-vscontrollertemplate), [dialog](http://aka.ms/bf-bc-vsdialogtemplate)) pro Visual Studio. ZIP soubory **nerozbalujte**, ale zkopírujte do složek Visual Studia.
 
@@ -34,7 +44,7 @@ Stáhněte si šablony [projektu](http://aka.ms/bf-bc-vstemplate) a souborů ([c
 
 Spusťte **Visual Studio 2017** a ověřte, že v nabídce **New project** máte projekt typu **Bot Application**:
 
-![1517995840433](/1517995840433.png)
+![1517995840433](images/1517995840433.png)
 
 Spusťte **Bot Framework Emulator**.
 
@@ -46,7 +56,7 @@ V první části se seznámíte se základními principy tvorby chatbota a struk
 
 2. Zvolte si název dle libosti, například "*AnoNeBot*".
 
-   ![1517996913543](/1517996913543.png)
+   ![1517996913543](images/1517996913543.png)
 
 3. Vygeneruje se základní kostra chatbota.
 
@@ -54,7 +64,7 @@ V první části se seznámíte se základními principy tvorby chatbota a struk
 
 5. Klikněte pravým tlačítkem na projekt a vyberte **Manage NuGet Packages...**
 
-   ![1518003519163](/1518003519163.png)
+   ![1518003519163](images/1518003519163.png)
 
 6. Zvolte **Updates**, potom zaškrtněte **Select all packages** a klikněte na **Update**. 
 
@@ -64,7 +74,7 @@ V první části se seznámíte se základními principy tvorby chatbota a struk
 
 Tím je příprava hotová. Když teď aplikaci spustíte klávesou **F5** (nebo tlačítkem se zelenou šipkou "Play"), otevře se okno prohlížeče. Přejděte do **Bot Framework Emulator**u, klikněte na pole s textem **Enter your endpoint URL** a vyberte stejný server, jako je v prohlížeči (v mém případě je to localhost:3979):
 
-![1518003750998](/1518003750998.png)
+![1518003750998](images/1518003750998.png)
 
 Celá adresa pak bude `http://localhost:3979/api/messages`.
 
@@ -72,7 +82,7 @@ Ponechte prázdná pole **Microsoft App ID** a **Microsoft App Password** a klik
 
 Když teď botovi něco napíšete, odpoví vám:
 
-![1518003927427](/1518003927427.png)
+![1518003927427](images/1518003927427.png)
 
 Tímto jsme ověřili, že vše funguje, a je čas zanořit se do kódu.
 
@@ -80,7 +90,7 @@ Tímto jsme ověřili, že vše funguje, a je čas zanořit se do kódu.
 
 Ve Visual Studiu zastavte ladění (**Shift + F5** nebo tlačítko "Stop"):
 
-![1518004014080](/1518004014080.png)
+![1518004014080](images/1518004014080.png)
 
 V panelu Solution Explorer rozbalte složku Controllers a podívejte se na soubor **MessagesController.cs**.
 
@@ -118,13 +128,13 @@ await context.PostAsync($"You sent {activity.Text} which was {length} characters
 
 Tento bot bude ale "chytřejší" a využije externí službu. Na adrese http://yesno.wtf je k dispozici veřejné API, které vrací náhodně odpověď "yes" nebo "no" a k ní patřičný GIF. Náš bot, poradce, ji využije, aby dokázal odpovědět na libovolnou otázku.
 
-![1518006751354](/1518006751354.png)
+![1518006751354](images/1518006751354.png)
 
 Nejprve si připravíme tzv. YesNoService:
 
 1. V podokně **Solution Explorer** vytvořte v projektu novou složku. Pojmenujte ji **Services**.
 
-   ![1518006863449](/1518006863449.png)
+   ![1518006863449](images/1518006863449.png)
 
 2. Klikněte na ni pravým tlačítkem a vyberte **Add > Class...**
 
@@ -290,7 +300,7 @@ using AnoNeBot.Services;
 
 Spusťte aplikaci (**F5**), přejděte do **Bot Framework Emulatoru** a zkuste se bota na něco zeptat.
 
-![1518009001857](/1518009001857.png)
+![1518009001857](images/1518009001857.png)
 
 ### RootDialog s obrázky
 
@@ -336,7 +346,7 @@ using System.Collections.Generic;
 
 Když aplikaci spustíte teď a položíte botovi otázku, dostanete mnohem bohatší odpověď.
 
-![1518009627918](/1518009627918.png)
+![1518009627918](images/1518009627918.png)
 
 ## Bot druhý - Kdo je to?
 
@@ -350,7 +360,7 @@ Budeme rozvíjet již vytvořený projekt, takže není potřeba zakládat nový
 
 2. Sežeňte fotky lidí, které se chcete naučit poznávat a vložte je do složky **Assets** (pravým tlačítkem ve Visual Studiu > **Add > Existing Item...**).
 
-   ![1518100369875](/1518100369875.png)
+   ![1518100369875](images/1518100369875.png)
 
 3. Přidejte novou třídu do složky **Models**. Pojmenujte ji **PeopleModel** (Add > Class... > PeopleModel.cs).
 
@@ -560,8 +570,18 @@ public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
 
 Pokud nyní aplikaci spustíte a napíšete chatbotovi zprávu, měli byste dostat obrázkovou odpověď:
 
-![1518107478717](/1518107478717.png)
+![1518107478717](images/1518107478717.png)
 
-## Shrnutí
+## Závěr
 
-ABCD
+Ve dvou částech jste se naučili, jak vytvořit jednoduchého chatbota v jazyce C#, jak poslat uživateli zprávy obohacené o obrázky a také, jak pracovat se stavem mezi zprávami.
+
+Možná další rozšíření:
+
+* Použít RootDialog jako rozcestník, který nabídne uživateli, zda chce raději znát odpověď na otázku, nebo se učit jména.
+* Načítat fotky a jména lidí dynamicky, například z Office 365.
+* Napojit chatbota na skutečné kanály - Skype, Slack, Web...
+
+## Další zdroje
+
+* [oficiální dokumentace](https://docs.microsoft.com/en-us/bot-framework/)
