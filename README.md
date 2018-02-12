@@ -574,6 +574,70 @@ Pokud nyní aplikaci spustíte a napíšete chatbotovi zprávu, měli byste dost
 
 ![1518107478717](images/1518107478717.png)
 
+## (Volitelně) Napojení na skutečné kanály
+
+Povídat si s chatbotem v emulátoru je zábava, ale nemůžete ho tímto způsobem nabídnout i dalším uživatelům. Pokud byste chtěli napojit bota na skutečné kanály (Skype, Messenger apod.), bude potřeba udělat několik dalších věcí.
+
+Pro registraci chatbota na komunikační kanály budete potřebovat **účet Microsoft Azure**.
+
+* [Trial](https://azure.microsoft.com/en-us/free/) je zdarma na měsíc. Dostanete 100 USD kreditu k volnému použití.
+* [Dev Essentials](https://www.visualstudio.com/dev-essentials/) obsahuje měsíčně se obnovující kredit po dobu jednoho roku.
+* Nabídka Azure pro studenty v rámci programu Imagine bohužel momentálně nedovoluje vytvářet Bot Service.
+
+Poté na [portále Microsoft Azure](https://portal.azure.com) vytvoříte nový zdroj typu **Bot Channels Registration**.
+
+![1518433351399](images/1518433351399.png)
+
+Umístěte jej do regionu **North Europe** a cenovou hladinu zvolte **F0**:
+
+![1518433487612](images/1518433487612.png)
+
+> Hodnota **Messaging endpoint** zatím zůstane prázdná, protože jsme kód bota ještě nezpřístupnili přes internet.
+
+Klikněte na **Microsoft App ID and password** a vyberte **Create New**. V panelu, který se otevře, klikněte na odkaz **Create App ID in the App Registration Portal**.
+
+![1518438690645](images/1518438690645.png)
+
+Poznamenejte si vygenerované **App ID** (třeba do Poznámkového bloku) a klikněte na tlačítko. Objeví se heslo **app password** - také si ho někam uložte (jakmile popup odklepnete, nedá se k němu už dostat). Potvrďte a tuto záložku můžete zavřít a vrátit se do portálu Azure.
+
+Vložte nově získané údaje do patřičných polí:
+
+![1518439093805](images/1518439093805.png)
+
+A také ve Visual Studiu do souboru **Web.config**:
+
+```xml
+<add key="BotId" value="mujbot" />
+<add key="MicrosoftAppId" value="App ID sem" />
+<add key="MicrosoftAppPassword" value="App Password sem" />
+```
+
+Registraci bota nyní můžete dokončit a potvrdit všechny otevřené panely:
+
+![1518439123488](images/1518439123488.png)
+
+Proklikejte si nově vytvořený Bot Service. Uvidíte například, že v sekci **Channels** si můžete vybrat, na jakých komunikačních kanálech bude bot dostupný. Sekce **Test in Web Chat** zase poslouží k rychlému vyzkoušení konverzace (momentálně nebude fungovat).
+
+Kód chatbota, webová aplikace, jež jsme od začátku vytvářeli, musí být přístupný z internetu. Měli byste jej tedy nasadit na webový server a získat jeho HTTPS adresu. Pro testování můžete stejného efektu dosáhnout i přímo z vašeho počítače pomocí nástroje [Ngrok](https://www.robinosborne.co.uk/2016/09/19/debugging-botframework-locally-using-ngrok/).
+
+> V praxi byste chabtota nasadili jednoduše [například do Azure](https://almvm.azurewebsites.net/labs/vsts/appservice/).
+
+Adresu webové aplikace s vaším chatbotem zadáte v sekci **Settings** do pole **Messaging endpoint** a na konec přidáte `/api/messages`:
+
+![1518436343949](images/1518436343949.png)
+
+Když teď aplikaci spustíte ve Visual Studiu a zkusíte botovi napsat v **Test in Web Chat**, měl by začít odpovídat:
+
+![1518440218267](images/1518440218267.png)
+
+Na **Skype** ho přidáte v sekci **Channels**:
+
+![1518440269608](images/1518440269608.png)
+
+Po uložení už stačí jenom kliknout v seznamu kanálů na Skype a začít chatovat:
+
+![1518440394854](images/1518440394854.png)
+
 ## Závěr
 
 Ve dvou částech jste se naučili, jak vytvořit jednoduchého chatbota v jazyce C#, jak poslat uživateli zprávy obohacené o obrázky a také, jak pracovat se stavem mezi zprávami.
@@ -581,8 +645,8 @@ Ve dvou částech jste se naučili, jak vytvořit jednoduchého chatbota v jazyc
 Možná další rozšíření:
 
 * Použít RootDialog jako rozcestník, který nabídne uživateli, zda chce raději znát odpověď na otázku, nebo se učit jména.
+* Zajistit, aby se fotky neopakovaly (tedy aby se neukázal stejný člověk několikrát, dokud budou ve frontě další).
 * Načítat fotky a jména lidí dynamicky, například z Office 365.
-* Napojit chatbota na skutečné kanály - Skype, Slack, Web... (K tomu je potřeba mít bota publikovaného na internet.)
 
 ## Další zdroje
 
