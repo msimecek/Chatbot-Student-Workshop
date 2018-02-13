@@ -3,9 +3,7 @@
 typora-copy-images-to: images
 ---
 
-V tomto workshopu se naučíte, jak vytvořit vlastního chatbota pomocí nástroje **Visual Studio**
-
-**2017**, jazyku **C#** a technologie **Microsoft Bot Framework**.
+V tomto workshopu se naučíte, jak vytvořit vlastního chatbota pomocí nástroje **Visual Studio 2017**, jazyka **C#** a technologie **Microsoft Bot Framework**.
 
 ## Předpoklady
 
