@@ -23,7 +23,7 @@ namespace AnoNeBot.Dialogs
 
             if (!activity.Text.EndsWith("?"))
             {
-                await context.PostAsync("To je zajímavé, ale dokud mi nepoložíš otázku, tak ti nemohu pomoci...");
+                await context.PostAsync("That's interesting, but until I don't get the question, I can't help you...");
             }
             else
             {

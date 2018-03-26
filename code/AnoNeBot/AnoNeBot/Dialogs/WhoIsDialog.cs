@@ -29,11 +29,11 @@ namespace AnoNeBot.Dialogs
 
                 if (activity.Text.ToLower() == lastFace.Value.ToLower())
                 {
-                    await context.PostAsync("Správně!");
+                    await context.PostAsync("Correct!");
                 }
                 else
                 {
-                    await context.PostAsync("Chyba! Je to " + lastFace.Value);
+                    await context.PostAsync("Error! it's " + lastFace.Value);
                 }
             }
 
@@ -50,7 +50,7 @@ namespace AnoNeBot.Dialogs
             context.ConversationData.SetValue("LastFace", face);
 
             var root = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + "/";
-            var card = new ThumbnailCard("Kdo je to?", images: new List<CardImage>() { new CardImage(root + face.Key) });
+            var card = new ThumbnailCard("Who is it?", images: new List<CardImage>() { new CardImage(root + face.Key) });
 
             var message = context.MakeMessage();
             message.Attachments.Add(card.ToAttachment());

@@ -3,108 +3,108 @@
 typora-copy-images-to: images
 ---
 
-V tomto workshopu se naučíte, jak vytvořit vlastního chatbota pomocí nástroje **Visual Studio 2017**, jazyka **C#** a technologie **Microsoft Bot Framework**.
+In this workshop, you will learn how to create your own chatbot using  **Visual Studio 2017**, the language **C#** and the **Microsoft Bot Framework** technology.
 
-## Předpoklady
+## Assumptions
 
-Přestože si v tomto cvičení vystačíte s kopírováním zdrojového kódu, bude lepší, když budete mít alespoň **základní znalost jazyka C#**.
+It's also a good idea to have a basic understanding of how Web applications work and are built.
 
-Je dobré mít také základní povědomí o fungování a tvorbě webových aplikací.
+For reading documentation, finding solutions to problems in development and programming in general it isbetter to know **English**. This workshop is in English. You'll find some screen cpature in Czech as it was originally designed by [@msimecek](https://github.com/msimecek).
 
-Pro čtení dokumentace, hledání řešení na problémy při vývoji a programování obecně je vhodné ovládat **angličtinu**.
+## Output
 
-## Výstup
+At the end of this exercise you will have a chatbot with two functionalities:
 
-Na konci tohoto cvičení budete mít chatbota se dvěma funkcionalitami:
+*Answer Yes/No to any question*
 
-*Odpověď Ano/Ne na libovolnou otázku*
+
 
 ![1518006751354](images/1518006751354.png)
 
-*Hádání jména podle obličeje*
+*Guessing names by face*
 
 ![1518107478717](images/1518107478717.png)
 
-## Příprava
+## Preparation
 
-[Stáhněte](https://www.visualstudio.com/) a nainstalujte si Visual Studio 2017. Bude stačit edice **Community**, která je pro studenty zdarma.
+[Download](https://www.visualstudio.com/) and install Visual Studio 2017. The **Community** Edition is enough and free.
 
-Při instalaci vyberte hlavně **ASP.NET and web development**:
+When installing, select mainly **ASP.NET and web development**:
 
 ![1517995366078](images/1517995366078.png)
 
-[Stáhněte](https://github.com/Microsoft/BotFramework-Emulator/releases) a nainstalujte si Bot Framework Emulator. Vyberte aktuální verzi, *Setup ... exe*:
+[Download](https://github.com/Microsoft/BotFramework-Emulator/releases) and install the Bot Framework Emulator. Select the current version, *Setup ... exe*:
 
 ![1517995547064](images/1517995547064.png)
 
-Stáhněte si šablony [projektu](http://aka.ms/bf-bc-vstemplate) a souborů ([controller](http://aka.ms/bf-bc-vscontrollertemplate), [dialog](http://aka.ms/bf-bc-vsdialogtemplate)) pro Visual Studio. ZIP soubory **nerozbalujte**, ale zkopírujte do složek Visual Studia.
+Download templates [projects](http://aka.ms/bf-bc-vstemplate) and files ([controller](http://aka.ms/bf-bc-vscontrollertemplate), [dialog](http://aka.ms/bf-bc-vsdialogtemplate)) for Visual Studio. Copy directly the ZIP files in the Visual Studio folders, **don't expand them**.
 
-* *Bot Application.zip* patří do `%USERPROFILE%\Documents\Visual Studio 2017\Templates\ProjectTemplates\Visual C#\`
-* *Bot Controller.zip* a *Bot Dialog.zip* patří do `%USERPROFILE%\Documents\Visual Studio 2017\Templates\ItemTemplates\Visual C#\`
+* *Bot Application.zip* copy in `%USERPROFILE%\Documents\Visual Studio 2017\Templates\ProjectTemplates\Visual C#\`
+* *Bot Controller.zip* and *Bot Dialog.zip* copy in `%USERPROFILE%\Documents\Visual Studio 2017\Templates\ItemTemplates\Visual C#\`
 
-Spusťte **Visual Studio 2017** a ověřte, že v nabídce **New project** máte projekt typu **Bot Application**:
+Start **Visual Studio 2017** and verify that you have a project of type **Bot Application** in the **NEW Project**:
 
 ![1517995840433](images/1517995840433.png)
 
-Spusťte **Bot Framework Emulator**.
+Run **Bot Framework Emulator**.
 
-## Bot první - Ano/Ne?
+## First Bot - Yes/No?
 
-V první části se seznámíte se základními principy tvorby chatbota a strukturování kódu.
+In the first part you will learn the basic principles of creating a chatbot and structuring of the code.
 
-1. Založte ve Visual Studiu 2017 nový projekt typu **Bot Application**.
+1. Create a new **Bot Application** Project in Visual Studio 2017.
 
-2. Zvolte si název dle libosti, například "*AnoNeBot*".
+2. Choose the name you like, for example "*AnoNeBot*".
 
    ![1517996913543](images/1517996913543.png)
 
-3. Vygeneruje se základní kostra chatbota.
+3. The basic chatbot skeleton is generated.
 
-4. Stiskněte klávesu **F6** (nebo vyberte v menu **Build > Build Solution**). Počkejte, než se během několika vteřin stáhnou potřebné balíčky.
+4. Press the **F6** key (or select Menu **Build > build Solution**). Wait for the necessary packages to download within a few seconds.
 
-5. Klikněte pravým tlačítkem na projekt a vyberte **Manage NuGet Packages...**
+5. Right-click the project and select **Manage NuGet packages...**
 
    ![1518003519163](images/1518003519163.png)
 
-6. Zvolte **Updates**, potom zaškrtněte **Select all packages** a klikněte na **Update**. 
+6. SELECT **Updates**, then select **Select All Packages** and click on **Update**. 
 
-7. Objeví-li se další dostupné aktualizace, zopakujte tento postup.
+7. If any other available updates appear, repeat this procedure.
 
-> Vetšinou je vhodné začínat vývoj s aktualizovanými balíčky.
+> In general, it's better to begin development with updated packages.
 
-Tím je příprava hotová. Když teď aplikaci spustíte klávesou **F5** (nebo tlačítkem se zelenou šipkou "Play"), otevře se okno prohlížeče. Přejděte do **Bot Framework Emulator**u, klikněte na pole s textem **Enter your endpoint URL** a vyberte stejný server, jako je v prohlížeči (v mém případě je to localhost:3979):
+The preparation is done. Now when you start the application with the **F5** key (or the green arrow button "Play"), a browser window opens. Go to **Bot Framework Emulator**, click on the box with the text **Enter your endpoint URL** and select the same server as in the browser (in this case it should be localhost:3979):
 
 ![1518003750998](images/1518003750998.png)
 
-Celá adresa pak bude `http://localhost:3979/api/messages`.
+The full address is `http://localhost:3979/api/messages`.
 
-Ponechte prázdná pole **Microsoft App ID** a **Microsoft App Password** a klikněte na **Connect**.
+Leave the **Microsoft App ID** and **Microsoft App Password** Fields blank and click **Connect**.
 
-Když teď botovi něco napíšete, odpoví vám:
+If you write something now, the bot will answer:
 
 ![1518003927427](images/1518003927427.png)
 
-Tímto jsme ověřili, že vše funguje, a je čas zanořit se do kódu.
+So we can check everything is working and jump into the code.
 
 ### MessagesController
 
-Ve Visual Studiu zastavte ladění (**Shift + F5** nebo tlačítko "Stop"):
+In Visual Studio, stop Debugging (**Shift + F5** or the  "Stop" button):
 
 ![1518004014080](images/1518004014080.png)
 
-V panelu Solution Explorer rozbalte složku Controllers a podívejte se na soubor **MessagesController.cs**.
+In the Solution Explorer panel, expand the Controllers folder and look for the file **MessagesController.cs**.
 
-Podstatná je metoda `Post()`, kam přijde každá zpráva od uživatele (aplikace ji nabízí na adrese `/api/messages`). Odtud pak putuje do dialogů - v našem případě je to `RootDialog`.
+The 'Post()' method is essential, it is where every message from the user comes (the application expose it at `/api/messages`). From there it goes into a dialogue-in our case it's `RootDialog`.
 
-> Chatbot je vlastně webová aplikace, konkrétně [API](https://cs.wikipedia.org/wiki/API). V C# používáme technologii *ASP.NET WebAPI*. Alternativou může být JavaScript a *Node.js*.
+> Chatbot is actually a Web application, specifically [API](https://cs.wikipedia.org/wiki/API). In C#, we use the technology *ASP.NET WebAPI*. The alternative can be JavaScript and *Node. js*.
 
-### RootDialog poprvé
+### RootDialog preparation
 
-Ve složce Dialogs je soubor **RootDialog.cs**. Třída `RootDialog` implementuje rozhraní `IDialog<object>` a v metodě `MessageReceivedAsync()` zpracovává zprávu od uživatele. 
+In the Dialogs folder, the file is **RootDialog.cs**. The `RootDialog` class implements the interface `IDialog<object>` and processes a message from the user in the `MessageReceivedAsync()` method. 
 
-Důležitý je parametr `context` typu `IDialogContext`, který se předává mezi všemi operacemi v rámci dialogu a určuje, kam příchozí zpráva patří.
+An important parameter is `context` of type `IDialogContext`, which is forwarded between all operations within the dialog and determines where the incoming message belongs.
 
-> Zpráva od uživatele není jenom text, ale také spousta informací okolo - jméno autora, účet, datum, konverzace a dialog, kam patří, stavové informace apod.
+> Message from the user is not just text, but also a lot of information about-author name, account, date, conversation and dialogue, where it belongs, status information, etc.
 
 ```c#
 public Task StartAsync(IDialogContext context)
@@ -118,7 +118,7 @@ private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<objec
 }
 ```
 
-Když upravíte text, který se posílá jako parametr metodě `PostAsync()`, změníte odpověď bota. Prosté...
+When you edit the text that is sent as a parameter to the `Postasync()` method, you can change the response. Simple...
 
 ```c#
 await context.PostAsync($"You sent {activity.Text} which was {length} characters");
@@ -126,21 +126,21 @@ await context.PostAsync($"You sent {activity.Text} which was {length} characters
 
 ### Services
 
-Tento bot bude ale "chytřejší" a využije externí službu. Na adrese http://yesno.wtf je k dispozici veřejné API, které vrací náhodně odpověď "yes" nebo "no" a k ní patřičný GIF. Náš bot, poradce, ji využije, aby dokázal odpovědět na libovolnou otázku.
+This bot will be "smarter" (funnier) and use an external service. At http://yesno.wtf, there is a public API that randomly returns a "yes" or "no" and an appropriate GIF. Our bot, the consultant, will use it to answer to any question. At the end of the day, you don't need anything than yes or no from a consultant :-)
 
 ![1518006751354](images/1518006751354.png)
 
-Nejprve si připravíme tzv. YesNoService:
+First, prepare the so-called YesNoService:
 
-1. V podokně **Solution Explorer** vytvořte v projektu novou složku. Pojmenujte ji **Services**.
+1. In the Solution Explorer pane, create a new folder in the project. Name it **Services**.
 
    ![1518006863449](images/1518006863449.png)
 
-2. Klikněte na ni pravým tlačítkem a vyberte **Add > Class...**
+2. Right click on it and select **Add > Class...**
 
-3. Pojmenujte soubor **YesNoService.cs**.
+3. Name the file **YesNoService.cs**.
 
-4. Doplňte implementaci:
+4. Complete the implementation:
 
 ```c#
 public class YesNoService
@@ -173,13 +173,13 @@ public class YesNoService
         switch (yesNo.ToLower())
         {
             case Answers.Yes:
-                translation = "Ano";
+                translation = "Yes";
                 break;
             case Answers.No:
-                translation = "Ne";
+                translation = "No";
                 break;
             default:
-                translation = "Nejsem si jistý";
+                translation = "Maybe";
                 break;
         }
 
@@ -187,28 +187,30 @@ public class YesNoService
     }
 }
 ```
+Note: in the previous code, you can translate the answer in any language, just replace, the "Yes", "No", "Maybe" by any translation.
 
-Co se tu odehrává?
 
-* Pomocí *HttpClient* si vyžádáme odpověď od *YesNo API*.
-* Přijatý řetězec ve formátu JSON převedeme pomocí knihovny *Json.NET* na C# objekt.
-* Budeme-li chtít odpověď v češtině, přeložíme ji.
-* Vrátíme hotovou odpověď k dalšímu zpracování (kdekoliv).
+What's happening here?
 
-Kód je zatím plný červeně podtrhaných výrazů. Zatím si toho nebudeme všímat a začneme doplňovat, co mu chybí.
+Using HttpClient, we will request a response from *YesNo API*.
+* The received JSON string is converted using the *Json.NET* Library to the C# object.
+If we want to reply in Czech or any other language, you can translate it. Use the function describe right before and implement the language you want.
+* We will return the completed response for further processing.
 
-*YesNo API* vrací výsledek ve formátu JSON:
+The code is now full of expressions underline in red. So far, we will not take notice of this and begin to add what is missing.
+
+* *YesNo API* returns a result in JSON format:
 
 ```json
 {"answer":"yes","forced":false,"image":"https://yesno.wtf/assets/yes/6-304e564038051dab8a5aa43156cdc20d.gif"}
 ```
 
-Připravíme si tedy odpovídající třídu v C#.
+We will prepare a corresponding class in C#.
 
-1. Přidejte do projektu novou složku, pojmenujte ji **Models**.
-2. Přidejte do ní novou třídu (**Add > Class...**).
-3. Pojmenujte soubor **YesNoModel.cs**.
-4. Doplňte implementaci:
+1. Add a new folder to the project, name it **Models**.
+2. Add a new class to it (**Add > Class...**).
+3. Name the file **YesNoModel.cs**.
+4. Complete the implementation:
 
 ```c#
 public class YesNoModel
@@ -219,7 +221,7 @@ public class YesNoModel
 }
 ```
 
-Abychom si udělali život v budoucnu jednodušší, přidáme ještě do stejného souboru konstanty pro jednotlivé typy odpovědí:
+To make life easier in the future, we will add the same constants for each type of answer:
 
 ```c#
 public static class Answers
@@ -230,7 +232,7 @@ public static class Answers
 }
 ```
 
-Celý **YesNoModel.cs** pak bude vypadat takto:
+The whole **YesNoModel.cs** will look like this:
 
 ```c#
 namespace AnoNeBot.Models
@@ -251,7 +253,7 @@ namespace AnoNeBot.Models
 }
 ```
 
-Vraťte se do **YesNoService.cs** a doplňte na začátek souboru:
+Return to **YesNoService.cs** and add at the beginning of the file:
 
 ```c#
 using AnoNeBot.Models;
@@ -260,18 +262,18 @@ using System.Net.Http;
 using System.Threading.Tasks;
 ```
 
-Všechna červená podtržení by měla zmizet.
+All red underlines should disappear.
 
-### RootDialog podruhé
+### RootDialog basic implementation
 
-Nyní upravíme *RootDialog* tak, aby využíval nově připravenou službu. Co chceme, aby bot dělal?
+Now adjust the *RootDialog* to take advantage of the newly prepared service. What do we want the bot to do?
 
-* Přijal zprávu od uživatele.
-* Zkontroloval, jestli se jedná o otázku.
-* Vyžádal si od YesNoService odpověď Ano/Ne.
-* Poslal tuto odpověď zpět uživateli.
+* received a message from the user.
+* Checked If this is a question.
+* Requested a Yes/no response from YesNoService.
+* Sent this reply back to the user.
 
-Najděte v souboru **RootDialog.cs** metodu **MessageReceivedAsync()** a upravte ji následovně:
+Locate the **MessageReceivedAsync()** in the **RootDialog.cs** file and edit it as follows:
 
 ```c#
 private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
@@ -280,7 +282,7 @@ private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<objec
 
     if (!activity.Text.EndsWith("?"))
     {
-        await context.PostAsync("To je zajímavé, ale dokud mi nepoložíš otázku, tak ti nemohu pomoci...");
+        await context.PostAsync("That's interesting, but until I don't get the question, I can't help you...");
     }
     else
     {
@@ -292,21 +294,22 @@ private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<objec
 }
 ```
 
-`YesNoService` bude červěně podtržené. Přidejte proto na začátek souboru ještě:
+`YesNoService` will be underlined. Therefore, add at the beginning of the file:
 
 ```c#
 using AnoNeBot.Services;
 ```
 
-Spusťte aplikaci (**F5**), přejděte do **Bot Framework Emulatoru** a zkuste se bota na něco zeptat.
+Run the application (**F5**), go to **Bot Framework Emulator** and try to boot to ask a question.
+
 
 ![1518009001857](images/1518009001857.png)
 
-### RootDialog s obrázky
+### RootDialog with pictures
 
-Bot Framework umožňuje využít i grafické prvky dostupné chatbotům na různých kanálech. My využijeme tzv. HeroCard a kromě strohé jednoslovné odpovědi pošleme uživateli i animovaný GIF.
+The Bot Framework allows you to take advantage of graphical elements available on different chatbot channels. We will use the so-called *HeroCard* and in addition to the austere Yes/No reply we send the user and animated GIF.
 
-Upravte kód metody MessageReceivedAsync() tak, aby využívala kartu:
+Modify the MessageReceivedAsync() method code to use the card:
 
 ```c#
 private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
@@ -315,7 +318,7 @@ private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<objec
 
     if (!activity.Text.EndsWith("?"))
     {
-        await context.PostAsync("To je zajímavé, ale dokud mi nepoložíš otázku, tak ti nemohu pomoci...");
+        await context.PostAsync("That's interesting, but until I don't get the question, I can't help you...");
     }
     else
     {
@@ -338,33 +341,33 @@ private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<objec
 }
 ```
 
-A nahoru doplňte opět using:
+And add at the beginning of the file:
 
 ```c#
 using System.Collections.Generic;
 ```
 
-Když aplikaci spustíte teď a položíte botovi otázku, dostanete mnohem bohatší odpověď.
+When you start the app now and ask the bot a question, you get a much richer response.
 
 ![1518009627918](images/1518009627918.png)
 
-## Bot druhý - Kdo je to?
+## Second Bot - who is it?
 
-Ve druhém cvičení přidáme do chatbota nový dialog a ukážeme si práci se stavovými informacemi uživatele. Toto rozšíření pomůže se zapamatováním jmen nových lidí - bot nabídne fotku a uživatel bude muset uhodnout jméno člověka.
+In the second exercise, we add a new dialog to Chatbota and we will show you how to work with status user information. This extension will help remembering the names of new people-Bot will offer a photo and the user would have to guess the name of a person.
 
-### Příprava
+### Preparation
 
-Budeme rozvíjet již vytvořený projekt, takže není potřeba zakládat nový.
+We will develop an already created project, so there is no need to create a new.
 
-1. Vytvořte v projektu novou složku, pojmenujte ji **Assets**.
+1. Create a new folder in the project, name it **Assets**.
 
-2. Sežeňte fotky lidí, které se chcete naučit poznávat a vložte je do složky **Assets** (pravým tlačítkem ve Visual Studiu > **Add > Existing Item...**).
+2. Get photos of people you want to learn and paste into the **Assets** Folder (right-click in Visual Studio > **Add > existing Item...**).
 
    ![1518100369875](images/1518100369875.png)
 
-3. Přidejte novou třídu do složky **Models**. Pojmenujte ji **PeopleModel** (Add > Class... > PeopleModel.cs).
+3. Add a new class to the **Models** folder. Name it **PeopleModel** (Add > Class... > PeopleModel.cs).
 
-4. Doplňte implementaci (nahraďte hodnoty vašimi názvy souborů a jmény, případně přidejte další řádky):
+4. Complete the implementation (replace the values with your file names and name, or add more lines):
 
 ```c#
 public class PeopleModel
@@ -378,17 +381,17 @@ public class PeopleModel
 }
 ```
 
-5. Přidejte using:
+5. Add a using at the beginning of the file:
 
 ```c#
 using System.Collections.Generic;
 ```
 
-Tolik příprava zdrojových dat. Bot bude čerpat ze seznamu `People` a bude náhodně posílat obrázky a kontrolovat správnost jména (první a druhá hodnota). Celou tuto funkčnost zabalíme do nového *dialogu*.
+So we're done for data source preparation. Bot will draw from the list of `People` and will randomly send pictures and check the correctness of the name (first and second value). We'll wrap this whole functionality into a new dialogue.
 
 ### WhoIsDialog
 
-Vytvořte ve složce **Dialogs** nový soubor typu **Bot Dialog** jménem **WhoIsDialog.cs** a vložte do něj implementaci metody `MessageReceivedAsync()`:
+Create a new file type **Bot Dialog** in the folder **dialogs** and file name **WhoIsDialog.cs** and insert the implementation of the `MessageReceivedAsync()` method:
 
 ```c#
 private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
@@ -401,11 +404,11 @@ private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<objec
             
         if (activity.Text.ToLower() == lastFace.Value.ToLower())
         {
-            await context.PostAsync("Správně!");
+            await context.PostAsync("Correct!");
         }
         else
         {
-            await context.PostAsync("Chyba! Je to " + lastFace.Value);
+            await context.PostAsync("Error! It's " + lastFace.Value);
         }
     }
 
@@ -415,35 +418,35 @@ private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<objec
 }
 ```
 
-A jako obvykle using:
+Add the missing using at the beginning of the file:
 
 ```c#
 using System.Collections.Generic;
 ```
 
-Kdykoliv přijde zpráva od uživatele, tak se nejprve podíváme, zda už jsme se ho zeptali na jméno k obličeji. Pokud ano, vytáhneme si informace tohoto obličeje (tedy obrázek a jméno).
+Whenever a message comes from the user, we will first look to see if we have asked him about the name of the face. If so, we will pull out the information of this face (i.e., image and name).
 
 ```c#
 var lastFace = context.ConversationData.GetValue<KeyValuePair<string, string>>("LastFace");
 ```
 
-A poté porovnáme, co nám přišlo ve zprávě, se jménem u daného obličeje.
+And then we compare what came in the message with the name of the face.
 
 ```c#
 if (activity.Text.ToLower() == lastFace.Value.ToLower())
 ```
 
-> V našem případě je `lastFace.Value` jméno a `lastFace.Key` fotka.
+> In our case `lastFace.Value` contains the name and `lastFace.Key` the picture.
 
-Podle toho, jak dopadne vyhodnocení, pošleme uživateli patřičnou odpověď.
+Depending on the evaluation, we will send the user an appropriate response.
 
-Na konci potom pošleme nový obličej a čekáme zase na odpověď.
+At the end we will send a new face and wait for the answer again.
 
-Aby bot takto fungoval, zbývá ještě pod *MessageReceivedAsync()* doplnit metodu `ShowRandomFaceAsync()`.
+In order for the bot to function, it remains below in the *MessageReceivedAsync()* to add a method `ShowRandomFaceAsync()`.
 
 ### Show Random Face
 
-V této pomocné metodě chceme ze seznamu obličejů náhodně jeden vybrat, sestavit grafickou kartu a tu poslat uživateli.
+In this helper method we want to randomly select one from the list of faces, assemble the ImageCard and send it to the user.
 
 ```c#
 private async Task ShowRandomFaceAsync(IDialogContext context)
@@ -454,7 +457,7 @@ private async Task ShowRandomFaceAsync(IDialogContext context)
     context.ConversationData.SetValue("LastFace", face);
 
     var root = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + "/";
-    var card = new ThumbnailCard("Kdo je to?", images: new List<CardImage>() { new CardImage(root + face.Key) });
+    var card = new ThumbnailCard("Who is it?", images: new List<CardImage>() { new CardImage(root + face.Key) });
 
     var message = context.MakeMessage();
     message.Attachments.Add(card.ToAttachment());
@@ -463,7 +466,7 @@ private async Task ShowRandomFaceAsync(IDialogContext context)
 }
 ```
 
-Usings na začátek souboru:
+Add the missing using at the beginning of the file:
 
 ```c#
 using AnoNeBot.Models;
@@ -471,17 +474,17 @@ using System.Linq;
 using System.Web;
 ```
 
-V přechozím cvičení jsme používali `HeroCard`, nyní zkoušíme `ThumbnailCard`, která má trochu jiné rozložení.
+In the previous exercises we used `HeroCard`, now we are trying `ThumbnailCard`, which has a slightly different layout.
 
-> Přehled všech typů karet najdete [v dokumentaci](https://docs.microsoft.com/en-us/bot-framework/nodejs/bot-builder-nodejs-send-rich-cards).
+> For an overview of all card types, see [documentation](https://docs.microsoft.com/en-us/bot-framework/nodejs/bot-builder-nodejs-send-rich-cards).
 
-V této metodě jsou klíčové dva momenty. Po vybrání náhodného obličeje si ho uložíme do `ConversationData`, protože až nám uživatel napíše odpověď, budeme chtít zkontrolovat, zda je správná (to už máme v kódu výše).
+Two elements are key in this method. After selecting a random face, we save it in `ConversationData`, because when the user writes an answer, we will want to check if it is correct (we already have it in the code above).
 
 ```c#
 context.ConversationData.SetValue("LastFace", face);
 ```
 
-Druhý důležitý moment je vygenerování "karty" s fotkou. Princip je stejný jako v předchozím cvičení, nicméně tady potřebujeme sestavit webovou adresu obrázku dynamicky, protože si jej hostujeme na webserveru sami.
+The second important element is the generation of a "card" with a photo. The principle is the same as in the previous exercise, however here we need to compile the web address of the image dynamically because you we host it on the webserver yourself.
 
 ```c#
 var root = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + "/";
@@ -489,11 +492,11 @@ var root = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + "
 new CardImage(root + face.Key) // face.Key => "Assets/martin.jpg"
 ```
 
-Výsledek potom pošleme uživateli.
+Then we send the result to the user.
 
-Všimněte si, že se do metody předává `context`.
+Note that `context` is being forwarded to the method.
 
-Celý WhoIsDialog by měl vypadat takto:
+The whole `WhoIsDialog` should look like this:
 
 ```c#
 [Serializable]
@@ -516,11 +519,11 @@ public class WhoIsDialog : IDialog<object>
 
             if (activity.Text.ToLower() == lastFace.Value.ToLower())
             {
-                await context.PostAsync("Správně!");
+                await context.PostAsync("Correct!");
             }
             else
             {
-                await context.PostAsync("Chyba! Je to " + lastFace.Value);
+                await context.PostAsync("Error! It's  " + lastFace.Value);
             }
         }
 
@@ -537,7 +540,7 @@ public class WhoIsDialog : IDialog<object>
         context.ConversationData.SetValue("LastFace", face);
 
         var root = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + "/";
-        var card = new ThumbnailCard("Kdo je to?", images: new List<CardImage>() { new CardImage(root + face.Key) });
+        var card = new ThumbnailCard("Who is it?", images: new List<CardImage>() { new CardImage(root + face.Key) });
 
         var message = context.MakeMessage();
         message.Attachments.Add(card.ToAttachment());
@@ -547,9 +550,9 @@ public class WhoIsDialog : IDialog<object>
 }
 ```
 
-### Změna dialogu
+### Changing the dialog
 
-Ještě před tím, že nový dialog vyzkoušíte, je potřeba změnit směrování zpráv v souboru **MessagesController.cs**, aby aplikace místo *RootDialogu* používala nový *WhoIsDialog*.
+Before you try the new dialog, you need to change the message routing in the **MessagesController.cs** So that the application uses the new WhoIsDialog instead of RootDialog.
 
 ```c#
 public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
@@ -568,85 +571,85 @@ public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
 }
 ```
 
-Pokud nyní aplikaci spustíte a napíšete chatbotovi zprávu, měli byste dostat obrázkovou odpověď:
+If you run the application now and write a message to the chatbot, you should get a picture response:
 
 ![1518107478717](images/1518107478717.png)
 
-## (Volitelně) Napojení na skutečné kanály
+## (Optional) Connection to actual channels
 
-Povídat si s chatbotem v emulátoru je zábava, ale nemůžete ho tímto způsobem nabídnout i dalším uživatelům. Pokud byste chtěli napojit bota na skutečné kanály (Skype, Messenger apod.), bude potřeba udělat několik dalších věcí.
+Chatting with Chatbot in the emulator is fun, but you can't offer it to other users in this way. If you want to tap into real channels (Skype, Messenger, etc.), you'll need to do a few more things.
 
-Pro registraci chatbota na komunikační kanály budete potřebovat **účet Microsoft Azure**.
+To register a chatbot on the communication channels, you will need a **Microsoft Azure account**.
 
-* [Trial](https://azure.microsoft.com/en-us/free/) je zdarma na měsíc. Dostanete 100 USD kreditu k volnému použití.
-* [Dev Essentials](https://www.visualstudio.com/dev-essentials/) obsahuje měsíčně se obnovující kredit po dobu jednoho roku.
-* Nabídka Azure pro studenty v rámci programu Imagine bohužel momentálně nedovoluje vytvářet Bot Service.
+* [Trial](https://azure.microsoft.com/en-us/free/) It's free for the moon. You will receive a $100 credit for free use.
+* [Dev Essentials](https://www.visualstudio.com/dev-essentials/) Includes a monthly renewal credit for one year.
 
-Poté na [portále Microsoft Azure](https://portal.azure.com) vytvoříte nový zdroj typu **Bot Channels Registration**.
+Then, on [Microsoft Azure portal](https://portal.azure.com), you create a new source of type **Bot Channels Registration**.
 
 ![1518433351399](images/1518433351399.png)
 
-Umístěte jej do regionu **North Europe** a cenovou hladinu zvolte **F0**:
+Place it in the region **North Europe** and select the price level **F0**:
 
 ![1518433487612](images/1518433487612.png)
 
-> Hodnota **Messaging endpoint** zatím zůstane prázdná, protože jsme kód bota ještě nezpřístupnili přes internet.
+> So far leave the **Messaging endpoint** value empty, we will change it later.
 
-Klikněte na **Microsoft App ID and password** a vyberte **Create New**. V panelu, který se otevře, klikněte na odkaz **Create App ID in the App Registration Portal**.
+Create a **Microsoft App ID and password** and select **Create New**. In the panel that opens, click **Create App ID in the App Registration Portal**.
 
 ![1518438690645](images/1518438690645.png)
 
-Poznamenejte si vygenerované **App ID** (třeba do Poznámkového bloku) a klikněte na tlačítko. Objeví se heslo **app password** - také si ho někam uložte (jakmile popup odklepnete, nedá se k němu už dostat). Potvrďte a tuto záložku můžete zavřít a vrátit se do portálu Azure.
+Make a note of the generated **APP ID** (like in Notepad) and click the button. A password will appear **App Password** - also save it somewhere (when you click the popup, you can no longer get to it so really make sure you save it). Confirm and you can close this tab and return to the Azure portal.
 
-Vložte nově získané údaje do patřičných polí:
+Enter the newly collected data in the appropriate fields:
 
 ![1518439093805](images/1518439093805.png)
 
-A také ve Visual Studiu do souboru **Web.config**:
+And also in Visual studio to a file **Web.config**:
 
 ```xml
 <add key="BotId" value="mujbot" />
-<add key="MicrosoftAppId" value="App ID sem" />
-<add key="MicrosoftAppPassword" value="App Password sem" />
+<add key="MicrosoftAppId" value="App ID here" />
+<add key="MicrosoftAppPassword" value="App Password here" />
 ```
 
-Registraci bota nyní můžete dokončit a potvrdit všechny otevřené panely:
+You can now complete the bot registration and confirm all open panels:
 
 ![1518439123488](images/1518439123488.png)
 
-Proklikejte si nově vytvořený Bot Service. Uvidíte například, že v sekci **Channels** si můžete vybrat, na jakých komunikačních kanálech bude bot dostupný. Sekce **Test in Web Chat** zase poslouží k rychlému vyzkoušení konverzace (momentálně nebude fungovat).
+Click through your newly created Bot Service. For example, you'll see that in the **channels** section, you can choose which communication channels the bot will be available on.**Test in Web Chat** will be used to quickly try out the conversation (it won't work at the moment).
 
-Kód chatbota, webová aplikace, jež jsme od začátku vytvářeli, musí být přístupný z internetu. Měli byste jej tedy nasadit na webový server a získat jeho HTTPS adresu. Pro testování můžete stejného efektu dosáhnout i přímo z vašeho počítače pomocí nástroje [Ngrok](https://www.robinosborne.co.uk/2016/09/19/debugging-botframework-locally-using-ngrok/).
+The chatbot code, the Web application that we created from scratch, must be accessible from the Internet. Therefore, you should deploy it to a Web server and obtain its HTTPS address. For testing, you can also reach the same effect directly from your computer using the [Ngrok](https://www.robinosborne.co.uk/2016/09/19/debugging-botframework-locally-using-ngrok/) tool.
 
-> V praxi byste chabtota nasadili jednoduše [například do Azure](https://almvm.azurewebsites.net/labs/vsts/appservice/).
+> In practice, you would simply deploy the chabtot [for example, to Azure](https://almvm.azurewebsites.net/labs/vsts/appservice/).
 
-Adresu webové aplikace s vaším chatbotem zadáte v sekci **Settings** do pole **Messaging endpoint** a na konec přidáte `/api/messages`:
+To enter the address of the Web application with your Chatbot, go in the **Settings**, then to the field **Messaging endpoint**, and add `/api/messages` to the end:
 
 ![1518436343949](images/1518436343949.png)
 
-Když teď aplikaci spustíte ve Visual Studiu a zkusíte botovi napsat v **Test in Web Chat**, měl by začít odpovídat:
+Now when you run the app in Visual Studio and try to write to the bot in **Test in Web Chat**, it should start responding:
 
 ![1518440218267](images/1518440218267.png)
 
-Na **Skype** ho přidáte v sekci **Channels**:
+For Skype, add it in the **Channels** Section:
 
 ![1518440269608](images/1518440269608.png)
 
-Po uložení už stačí jenom kliknout v seznamu kanálů na Skype a začít chatovat:
+After saving, just click on Skype in the channel list and start chatting:
 
 ![1518440394854](images/1518440394854.png)
 
-## Závěr
+## Conclusion
 
-Ve dvou částech jste se naučili, jak vytvořit jednoduchého chatbota v jazyce C#, jak poslat uživateli zprávy obohacené o obrázky a také, jak pracovat se stavem mezi zprávami.
+In two sections, you learned how to create a simple chatbot in C#, how to send to a user a message enriched with images, and how to work with the state between messages.
 
-Možná další rozšíření:
+Possible additional extensions:
 
-* Použít RootDialog jako rozcestník, který nabídne uživateli, zda chce raději znát odpověď na otázku, nebo se učit jména.
-* Zajistit, aby se fotky neopakovaly (tedy aby se neukázal stejný člověk několikrát, dokud budou ve frontě další).
-* Načítat fotky a jména lidí dynamicky, například z Office 365.
+* Use RootDialog as a signpost that will offer the user whether he wants to prefer to know the answer to the question or to learn the names.
+* Ensure that the photos do not recur (i.e. not to show the same person several times until they are in the queue next).
+* Load photos and people names dynamically, for example, from Office 365.
+* Store the user states in your own table or SQL Database
 
-## Další zdroje
+## Additional Resources
 
-* [oficiální dokumentace](https://docs.microsoft.com/en-us/bot-framework/)
-* [nastavení komunikačních kanálů](https://docs.microsoft.com/en-us/bot-framework/bot-service-manage-channels)
+* [Official documentation](https://docs.microsoft.com/en-us/bot-framework/)
+* [Setup communication channels](https://docs.microsoft.com/en-us/bot-framework/bot-service-manage-channels)
