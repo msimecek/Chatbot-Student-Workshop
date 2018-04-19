@@ -9,7 +9,7 @@ In this workshop, you will learn how to create your own chatbot using  **Visual 
 
 It¨s good to have a basic understanding of how web applications work and how are they built.
 
-For reading documentation, finding solutions to problems in development and programming in general it is better to know **English**. This workshop is in English. You'll find some screen captures in Czech as it was originally designed by [@msimecek](https://github.com/msimecek).
+For reading documentation, finding solutions to problems in development and programming in general it is better to know **English**. This workshop is in English. You'll find some screen captures in Czech as it was originally designed in Czech.
 
 ## Output
 
@@ -46,7 +46,72 @@ Start **Visual Studio 2017** and verify that you have a project of type **Bot Ap
 
 Run **Bot Framework Emulator**.
 
-## First Bot - Yes/No?
+## Warm-up: QnA
+
+We're going to start our bot journey without coding, by creating a simple QnA bot.
+
+1. Sign in to the [Azure Portal](https://portal.azure.com).
+2. Click **+ Create a resource**.
+3. Search for **Functions Bot**.
+4. Click **Create**.
+5. Enter a **name**, let it **create a resource group** and **app name** for you.
+6. Pick the **Question and Answer** template in the **C#** section.
+
+	![1524179207704](images/1524179207704.png)
+
+1. Confirm with the **Select** button.
+2. Turn **Application Insights off**.
+3. Finish by clicking **Create**.
+
+This template unfortunately doesn't create the appropriate QnA Maker backend for our bot. We have to do it manually now and extract knowledge base ID and key.
+
+1. Navigate to [QnA Maker](https://qnamaker.ai/) and **Sign in** with your Microsoft Account.
+2. Select **Create new service**.
+3. Enter a **name**.
+4. As a **knowledge base URL** use any FAQ page you want to try, or enter `https://azure.microsoft.com/en-us/support/faq/`.
+5. Click **Create**.
+
+When the crawling finishes, you should see the contents of your FAQ in a table. If this falis, the site is probably not formatted properly for QnA crawling. Try another one or upload your questions and answers as a document.
+
+Knowledge base is now ready, we only need to train it and publish it to make it available to our bot.
+
+1. Click **Save and retrain**.
+
+   ![1524178308311](/images/1524178308311.png)
+
+2. Click **Publish**.
+
+   ![1524178340971](/images/1524178340971.png)
+
+3. And once again **Publish**.
+
+The interface will show you a sample HTTP request. You need to extract two pieces of information from this screen: *knowledge base ID* and *key*.
+
+![1524178525862](/images/1524178525862.png)
+
+1. Return to the Azure Portal and open your knewly created bot.
+
+2. Go to the **Build** blade.
+
+3. Click **Open this bot in Azure Functions**.
+
+   ![1524178622708](/images/1524178622708.png)
+
+4. Click **Application settings**.
+
+   ![1524178659986](/images/1524178659986.png)
+
+5. Enter the knowledge base ID and key values to appropriate settings (`QnAKnowledgebaseId` and `QnASubscriptionKey`). 
+
+6. Scroll up and click **Save**.
+
+7. Go back to your bot and switch to the **Test in Web Chat** blade.
+
+8. Test your QnA bot.
+
+   ![1524178884278](/images/1524178884278.png)
+
+## First Bot: Yes/No?
 
 In the first part you will learn the basic principles of creating a chatbot and structuring the code.
 
@@ -349,7 +414,7 @@ When you start the app now and ask the bot a question, you get a much richer res
 
 ![1518009627918](images/1518009627918.png)
 
-## Second Bot - who is it?
+## Second Bot: Who is it?
 
 In the second exercise, we add a new dialog to the chatbot and demonstrate how to work with user state. This extension will help remembering the names of new people. Bot will offer a photo and the user will guess the name of a person.
 

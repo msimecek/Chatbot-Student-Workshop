@@ -11,7 +11,7 @@ In this workshop, you will learn how to create your own chatbot using  **Visual 
 
 There will be a lot of copy-pasting in this workshop, but it's better to have a basic understanding of how web applications work and are built.
 
-For reading documentation, finding solutions to problems in development and programming in general it is better to know **English**. This workshop is in English. Some of the screen captures are Czech as it was originally designed by [@msimecek](https://github.com/msimecek).
+For reading documentation, finding solutions to problems in development and programming in general it is better to know **English**. This workshop is in English. Some of the screen captures are Czech as it was originally designed in Czech.
 
 ## Output
 
@@ -33,7 +33,83 @@ At the end of this exercise you will have a chatbot with two functionalities:
 
 ![1517995547064](images/1517995547064.png)
 
-## First Bot - Yes/No?
+Make sure you have [Node.js](https://nodejs.org/) installed.
+
+To connect to actual channels and QnA Maker (warm-up exercise), you will need a **Microsoft Azure subscription**.
+
+## Warm-up: QnA
+
+We're going to start our bot journey without coding, by creating a simple QnA bot.
+
+1. Sign in to the [Azure Portal](https://portal.azure.com).
+
+2. Click **+ Create a resource**.
+
+3. Search for **Functions Bot**.
+
+4. Click **Create**.
+
+5. Enter a **name**, let it **create a resource group** and **app name** for you.
+
+6. Pick the **Question and Answer** template in the **Node.js** section.
+
+   ![1524177587258](images/1524177587258.png)
+
+7. Confirm with the **Select** button.
+
+8. Turn **Application Insights off**.
+
+9. Finish by clicking **Create**.
+
+This template unfortunately doesn't create the appropriate QnA Maker backend for our bot. We have to do it manually now and extract knowledge base ID and key.
+
+1. Navigate to [QnA Maker](https://qnamaker.ai/) and **Sign in** with your Microsoft Account.
+2. Select **Create new service**.
+3. Enter a **name**.
+4. As a **knowledge base URL** use any FAQ page you want to try, or enter `https://azure.microsoft.com/en-us/support/faq/`.
+5. Click **Create**.
+
+When the crawling finishes, you should see the contents of your FAQ in a table. If this falis, the site is probably not formatted properly for QnA crawling. Try another one or upload your questions and answers as a document.
+
+Knowledge base is now ready, we only need to train it and publish it to make it available to our bot.
+
+1. Click **Save and retrain**.
+
+   ![1524178308311](images/1524178308311.png)
+
+2. Click **Publish**.
+
+   ![1524178340971](images/1524178340971.png)
+
+3. And once again **Publish**.
+
+The interface will show you a sample HTTP request. You need to extract two pieces of information from this screen: *knowledge base ID* and *key*.
+
+![1524178525862](images/1524178525862.png)
+
+1. Return to the Azure Portal and open your knewly created bot.
+
+2. Go to the **Build** blade.
+
+3. Click **Open this bot in Azure Functions**.
+
+   ![1524178622708](images/1524178622708.png)
+
+4. Click **Application settings**.
+
+   ![1524178659986](images/1524178659986.png)
+
+5. Enter the knowledge base ID and key values to appropriate settings (`QnAKnowledgebaseId` and `QnASubscriptionKey`). 
+
+6. Scroll up and click **Save**.
+
+7. Go back to your bot and switch to the **Test in Web Chat** blade.
+
+8. Test your QnA bot.
+
+   ![1524178884278](images/1524178884278.png)
+
+## First Bot: Yes/No?
 
 In the first part you will learn the basic principles of creating a chatbot and structuring the code.
 
@@ -279,43 +355,117 @@ When you start the app now and ask the bot a question, you get a much richer res
 
 ![1518009627918](images/1518009627918.png)
 
-## Second Bot - who is it?
+## Second Bot: Who is it?
 
-In the second exercise, we add a new dialog to Chatbota and we will show you how to work with status user information. This extension will help remembering the names of new people-Bot will offer a photo and the user would have to guess the name of a person.
+In the second exercise, we add a new dialog to the chatbot and demonstrate how to work with user state. This extension will help remembering the names of new people. Bot will offer a photo and the user will guess the name of a person.
 
 ### Preparation
 
-We will develop an already created project, so there is no need to create a new.
+We will continue with the project we have built in the previous exercise, so there is no need to create a new one.
 
-1. Create a new folder in the project, name it **Assets**.
+1. Create a new folder in the project, name it **assets**.
 
-2. Get photos of people you want to learn and paste into the **Assets** Folder (right-click in Visual Studio > **Add > existing Item...**).
+2. Get photos of people you want to learn and copy them into the **assets** folder.
 
-   ![1518100369875](images/1518100369875.png)
+   ![1523975191158](images/1523975191158.png)
 
-3. Add a new class to the **Models** folder. Name it **PeopleModel** (Add > Class... > PeopleModel.cs).
+3. Add another service to the **services** folder. Call the file **people-service.js**.
 
-4. Complete the implementation (replace the values with your file names and name, or add more lines):
+4. Implement the service:
 
-```c#
-public class PeopleModel
-{
-    public static Dictionary<string, string> People = new Dictionary<string, string>()
-    {
-        { "Assets/jarda.jpg", "Jarda" },
-        { "Assets/martin.jpg", "Martin" },
-        { "Assets/satya.jpg", "Satya" }
-    };
+```javascript
+//@ts-check
+module.exports.get = () => {
+    return [
+        {image: "./assets/jarda.jpg", name: "Jarda"},
+        {image: "./assets/martin.jpg", name: "Martin"},
+        {image: "./assets/satya.jpg", name: "Satya"}
+    ]
 }
 ```
 
-5. Add a using at the beginning of the file:
+As you can see it's not an actual service, just a mock which returns image paths along with corresponding names.
 
-```c#
-using System.Collections.Generic;
+### WhoIs dialog
+
+This service will be consumed by our second dialog. To make things more modular and maintainable, we will put the implementation to a separate file.
+
+1. Add new file to the root folder, call it **whois.js**.
+2. Implement the *whois* dialog:
+
+```javascript
+//@ts-check
+const builder = require('botbuilder');
+const fs = require('fs');
+const PeopleService = require('./services/people-service')
+
+module.exports = [
+    function(session) {
+        if (session.message.text === "back") {
+            session.endDialog();
+            return;
+        }
+        
+        if (session.conversationData.lastFaceName !== undefined) {
+            const lastFace = session.conversationData.lastFaceName;
+            if (session.message.text.toLowerCase() === lastFace.toLowerCase()) {
+                session.send("Správně!");
+            }
+            else {
+                session.send("Incorrect! It's **" + lastFace + "**.");
+            }
+        }
+
+        showRandomFace(session);
+    }
+];
+
+// ----
+// support functions
+// ----
+function showRandomFace(session) {
+    const faces = PeopleService.get();
+    const rand = getRandomInt(faces.length);
+    const face = faces[rand];
+    // Bot Framework cards consume URL as the source for images.
+    // We use Base64 in this case, but it could be any other internet-accessible image.
+    const faceImage = "data:image/jpeg;base64," + base64_encode(face.image);
+
+    // Saving last shown person's name to the state storage.
+    // This is the way how you make information available to the bot between messages.
+    // Otherwise it's stateless.
+    session.conversationData.lastFaceName = face.name;
+    // Using Thumbnail Card to make it different :)
+    var msg = new builder.Message(session).addAttachment(createThumbnailCard(session, "Kdo je to?", "", faceImage));
+    session.send(msg);
+}
+
+function createThumbnailCard(session, title, text, imageUrl) {
+    return new builder.ThumbnailCard(session)
+            .title(title)
+            .text(text)
+            .images([builder.CardImage.create(session, imageUrl)]);
+}
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
+function base64_encode(file) {
+    var bitmap = fs.readFileSync(file);
+    return new Buffer(bitmap).toString('base64');
+}
 ```
 
-So we're done for data source preparation. Bot will draw from the list of `People` and will randomly send pictures and check the correctness of the name (first and second value). We'll wrap this whole functionality into a new dialogue.
+As you can see, the dialog waterfall can be exported from a module and consumed from another file.
+
+Go back to **yesnobot.js** and add a new dialog below the previous one:
+
+```javascript
+bot.dialog("whois", require("./whois")).triggerAction({matches: [/who/i, /whois/i]});
+```
+
+The `triggerAction` piece defines which keywords (a regular expression) will trigger this particular dialog. The trigger can be more sophisticated and involve natural language processing service.
 
 ### WhoIsDialog
 
