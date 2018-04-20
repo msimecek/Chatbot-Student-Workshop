@@ -1,4 +1,5 @@
 //@ts-check
+require('dotenv').load();
 const restify = require('restify');
 const builder = require('botbuilder');
 const YesNoService = require('./services/yes-no-service');
@@ -30,6 +31,8 @@ bot.dialog("/", [
         }
     }
 ]);
+
+bot.dialog("whois", require("./whois")).triggerAction({matches: [/who/i, /whois/i]});
 
 function createHeroCard(session, title, text, imageUrl) {
     return new builder.HeroCard(session)
