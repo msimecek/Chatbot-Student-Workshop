@@ -3,6 +3,8 @@
 typora-copy-images-to: images
 ---
 
+> If you're interested in English version of this content, [switch to the en-localization branch](../../tree/en-localization).
+
 V tomto workshopu se naučíte, jak vytvořit vlastního chatbota pomocí nástroje **Visual Studio 2017**, jazyka **C#** a technologie **Microsoft Bot Framework**.
 
 ## Předpoklady
