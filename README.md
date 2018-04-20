@@ -5,9 +5,9 @@ typora-copy-images-to: images
 
 In this workshop, you will learn how to create your own chatbot using  **Visual Studio 2017**, **C#** language and **Microsoft Bot Framework**.
 
-> There are two versions of this workshop: you are currently reading the C# one. If you're more of a JavaScript/Node.js person, switch to the [other one](README-Node.md).
+> **There are two versions of this workshop**: you are currently reading the C# one. If you're more of a JavaScript/Node.js person, switch to the [other one](README-Node.md).
 >
-> English translation was kindly started by @laurelle.
+> English translation was kindly started by @Ellerbach.
 
 ## Assumptions
 

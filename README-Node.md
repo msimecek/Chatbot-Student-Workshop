@@ -7,7 +7,7 @@ In this workshop, you will learn how to create your own chatbot using  **Visual 
 
 > **There are two versions of this workshop**: you are currently reading the JavaScript one. If you're more of a C#/.NET person, switch to the [other one](README.md).
 >
-> English translation was kindly initiated by @laurelle.
+> English translation was kindly initiated by @Ellerbach.
 
 ## Assumptions
 
