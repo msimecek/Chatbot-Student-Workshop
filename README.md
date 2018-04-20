@@ -89,6 +89,8 @@ The interface will show you a sample HTTP request. You need to extract two piece
 
 ![1524178525862](/images/1524178525862.png)
 
+> **Note**: Don't try to exploit this code, it's not valid anymore :)
+
 1. Return to the Azure Portal and open your knewly created bot.
 
 2. Go to the **Build** blade.
@@ -703,7 +705,7 @@ After saving, just click Skype in the channel list and start chatting:
 
 ## Conclusion
 
-In two sections, you learned how to create a simple chatbot in C#, how to send a user a message enriched with images, and how to work with persisted state between messages.
+In three sections, you learned how to create a simple chatbot in C#, how to send a user a message enriched with images, and how to work with persisted state between messages.
 
 Possible extensions:
 

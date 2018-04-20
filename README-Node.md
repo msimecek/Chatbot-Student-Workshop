@@ -87,6 +87,8 @@ The interface will show you a sample HTTP request. You need to extract two piece
 
 ![1524178525862](images/1524178525862.png)
 
+> **Note**: Don't try to exploit this code, it's not valid anymore :)
+
 1. Return to the Azure Portal and open your knewly created bot.
 
 2. Go to the **Build** blade.
@@ -420,6 +422,41 @@ module.exports = [
     }
 ];
 
+
+```
+
+As you can see, the dialog waterfall can be exported from a module and consumed from another file.
+
+
+
+Whenever a message comes from the user, we will first look to see if we have asked him about the name of the face. If so, we will pull out the information of this face (i.e., image and name).
+
+```javascript
+if (session.conversationData.lastFaceName !== undefined) {
+    ...
+}
+```
+
+And then we compare what came in the message with the name of the face. Depending on the evaluation, we will send the user an appropriate response.
+
+```javascript
+if (session.message.text.toLowerCase() === lastFace.toLowerCase()) {
+    session.send("Správně!");
+}
+else {
+    session.send("Incorrect! It's **" + lastFace + "**.");
+}
+```
+
+At the end we will send a new face and wait for the answer again.
+
+For the whole code to run, we must add the `showRandomFace()` function and its dependencies.
+
+### Show Random Face
+
+In this helper function we want to randomly select one from the list of faces, assemble the ThumbnailCard and send it back to the user.
+
+```javascript
 // ----
 // support functions
 // ----
@@ -457,7 +494,32 @@ function base64_encode(file) {
 }
 ```
 
-As you can see, the dialog waterfall can be exported from a module and consumed from another file.
+In the previous exercises we used `HeroCard`, now we are trying `ThumbnailCard`, which has a slightly different layout.
+
+> For an overview of all card types, see [documentation](https://docs.microsoft.com/en-us/bot-framework/nodejs/bot-builder-nodejs-send-rich-cards).
+
+There are two key elements in this method. After selecting a random face, we save it in `conversationData`, because when the user writes an answer, we want to check if it is correct (we already have it in the code above).
+
+```c#
+context.ConversationData.SetValue("LastFace", face);
+```
+
+The second important element is the generation of a "card" with a photo. The principle is the same as in the previous exercise, however here we're using a different approach. Bot Builder cards accept any image which conforms the the URL format - it can be provided from the internet or it can be encoded to base64 and provided directly as a string. And that's what's happening here.
+
+```javascript
+const faceImage = "data:image/jpeg;base64," + base64_encode(face.image);
+...
+function base64_encode(file) {
+    var bitmap = fs.readFileSync(file);
+    return new Buffer(bitmap).toString('base64');
+}
+```
+
+Note that `context` is being forwarded to the getRandomFace method.
+
+### Changing the dialog
+
+Before you try the new dialog, you need to change the message routing so that the application uses the new *whois* dialog instead of the original one.
 
 Go back to **yesnobot.js** and add a new dialog below the previous one:
 
@@ -467,191 +529,11 @@ bot.dialog("whois", require("./whois")).triggerAction({matches: [/who/i, /whois/
 
 The `triggerAction` piece defines which keywords (a regular expression) will trigger this particular dialog. The trigger can be more sophisticated and involve natural language processing service.
 
-### WhoIsDialog
-
-Create a new file type **Bot Dialog** in the folder **dialogs** and file name **WhoIsDialog.cs** and insert the implementation of the `MessageReceivedAsync()` method:
-
-```c#
-private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
-{
-    var activity = await result as IMessageActivity;
-
-    if (context.ConversationData.ContainsKey("LastFace"))
-    {
-        var lastFace = context.ConversationData.GetValue<KeyValuePair<string, string>>("LastFace");
-            
-        if (activity.Text.ToLower() == lastFace.Value.ToLower())
-        {
-            await context.PostAsync("Correct!");
-        }
-        else
-        {
-            await context.PostAsync("Error! It's " + lastFace.Value);
-        }
-    }
-
-    await ShowRandomFaceAsync(context);
-
-    context.Wait(MessageReceivedAsync);
-}
-```
-
-Add the missing using at the beginning of the file:
-
-```c#
-using System.Collections.Generic;
-```
-
-Whenever a message comes from the user, we will first look to see if we have asked him about the name of the face. If so, we will pull out the information of this face (i.e., image and name).
-
-```c#
-var lastFace = context.ConversationData.GetValue<KeyValuePair<string, string>>("LastFace");
-```
-
-And then we compare what came in the message with the name of the face.
-
-```c#
-if (activity.Text.ToLower() == lastFace.Value.ToLower())
-```
-
-> In our case `lastFace.Value` contains the name and `lastFace.Key` the picture.
-
-Depending on the evaluation, we will send the user an appropriate response.
-
-At the end we will send a new face and wait for the answer again.
-
-In order for the bot to function, it remains below in the *MessageReceivedAsync()* to add a method `ShowRandomFaceAsync()`.
-
-### Show Random Face
-
-In this helper method we want to randomly select one from the list of faces, assemble the ImageCard and send it to the user.
-
-```c#
-private async Task ShowRandomFaceAsync(IDialogContext context)
-{
-    Random rand = new Random();
-    var face = PeopleModel.People.ElementAt(rand.Next(0, PeopleModel.People.Count));
-
-    context.ConversationData.SetValue("LastFace", face);
-
-    var root = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + "/";
-    var card = new ThumbnailCard("Who is it?", images: new List<CardImage>() { new CardImage(root + face.Key) });
-
-    var message = context.MakeMessage();
-    message.Attachments.Add(card.ToAttachment());
-
-    await context.PostAsync(message);
-}
-```
-
-Add the missing using at the beginning of the file:
-
-```c#
-using AnoNeBot.Models;
-using System.Linq;
-using System.Web;
-```
-
-In the previous exercises we used `HeroCard`, now we are trying `ThumbnailCard`, which has a slightly different layout.
-
-> For an overview of all card types, see [documentation](https://docs.microsoft.com/en-us/bot-framework/nodejs/bot-builder-nodejs-send-rich-cards).
-
-Two elements are key in this method. After selecting a random face, we save it in `ConversationData`, because when the user writes an answer, we will want to check if it is correct (we already have it in the code above).
-
-```c#
-context.ConversationData.SetValue("LastFace", face);
-```
-
-The second important element is the generation of a "card" with a photo. The principle is the same as in the previous exercise, however here we need to compile the web address of the image dynamically because you we host it on the webserver yourself.
-
-```c#
-var root = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + "/";
-...
-new CardImage(root + face.Key) // face.Key => "Assets/martin.jpg"
-```
-
-Then we send the result to the user.
-
-Note that `context` is being forwarded to the method.
-
-The whole `WhoIsDialog` should look like this:
-
-```c#
-[Serializable]
-public class WhoIsDialog : IDialog<object>
-{
-    public Task StartAsync(IDialogContext context)
-    {
-        context.Wait(MessageReceivedAsync);
-
-        return Task.CompletedTask;
-    }
-
-    private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
-    {
-        var activity = await result as IMessageActivity;
-
-        if (context.ConversationData.ContainsKey("LastFace"))
-        {
-            var lastFace = context.ConversationData.GetValue<KeyValuePair<string, string>>("LastFace");
-
-            if (activity.Text.ToLower() == lastFace.Value.ToLower())
-            {
-                await context.PostAsync("Correct!");
-            }
-            else
-            {
-                await context.PostAsync("Error! It's  " + lastFace.Value);
-            }
-        }
-
-        await ShowRandomFaceAsync(context);
-
-        context.Wait(MessageReceivedAsync);
-    }
-
-    private async Task ShowRandomFaceAsync(IDialogContext context)
-    {
-        Random rand = new Random();
-        var face = PeopleModel.People.ElementAt(rand.Next(0, PeopleModel.People.Count));
-
-        context.ConversationData.SetValue("LastFace", face);
-
-        var root = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + "/";
-        var card = new ThumbnailCard("Who is it?", images: new List<CardImage>() { new CardImage(root + face.Key) });
-
-        var message = context.MakeMessage();
-        message.Attachments.Add(card.ToAttachment());
-
-        await context.PostAsync(message);
-    }
-}
-```
-
-### Changing the dialog
-
-Before you try the new dialog, you need to change the message routing in the **MessagesController.cs** So that the application uses the new WhoIsDialog instead of RootDialog.
-
-```c#
-public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
-{
-    if (activity.Type == ActivityTypes.Message)
-    {
-        //await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
-        await Conversation.SendAsync(activity, () => new Dialogs.WhoIsDialog());
-    }
-    else
-    {
-        HandleSystemMessage(activity);
-    }
-    var response = Request.CreateResponse(HttpStatusCode.OK);
-    return response;
-}
-```
-
-If you run the application now and write a message to the chatbot, you should get a picture response:
+If you run the application now and send the bot a "who" message. It should switch to the new dialog and respond with a picture:
 
 ![1518107478717](images/1518107478717.png)
+
+To go back to the first dialog, just send "back".
 
 ## (Optional) Connection to actual channels
 
@@ -682,21 +564,36 @@ Enter the newly collected data in the appropriate fields:
 
 ![1518439093805](images/1518439093805.png)
 
-And also in Visual studio to a file **Web.config**:
-
-```xml
-<add key="BotId" value="mujbot" />
-<add key="MicrosoftAppId" value="App ID here" />
-<add key="MicrosoftAppPassword" value="App Password here" />
-```
-
 You can now complete the bot registration and confirm all open panels:
 
 ![1518439123488](images/1518439123488.png)
 
 Click through your newly created Bot Service. For example, you'll see that in the **channels** section, you can choose which communication channels the bot will be available on.**Test in Web Chat** will be used to quickly try out the conversation (it won't work at the moment).
 
-The chatbot code, the Web application that we created from scratch, must be accessible from the Internet. Therefore, you should deploy it to a Web server and obtain its HTTPS address. For testing, you can also reach the same effect directly from your computer using the [Ngrok](https://www.robinosborne.co.uk/2016/09/19/debugging-botframework-locally-using-ngrok/) tool.
+Let's adjust our bot code to use this new configuration. Go back to Visual Studo, enter the terminal and type:
+
+```
+npm install --save dotenv
+```
+
+Then create a new file in root and call it **.env**.
+
+Contents of this file will be:
+
+```
+MicrosoftAppId=your App ID
+MicrosoftAppPassword=your app password
+```
+
+And finally put this line to the top of **yesnobot.js**:
+
+```javascript
+require('dotenv').load();
+```
+
+This will make sure that environmental properties are loaded from the .env file.
+
+Our chatbot code, the Web application that we created from scratch, must be accessible from the Internet. Therefore, you should deploy it to a Web server and obtain its HTTPS address. For testing, you can also reach the same effect directly from your computer using the [Ngrok](https://www.robinosborne.co.uk/2016/09/19/debugging-botframework-locally-using-ngrok/) tool.
 
 > In practice, you would simply deploy the chabtot [for example, to Azure](https://almvm.azurewebsites.net/labs/vsts/appservice/).
 
@@ -718,11 +615,11 @@ After saving, just click on Skype in the channel list and start chatting:
 
 ## Conclusion
 
-In two sections, you learned how to create a simple chatbot in C#, how to send to a user a message enriched with images, and how to work with the state between messages.
+In three sections, you learned how to create a simple chatbot using QnA Maker, more complex chatbot in Node.js, how to send to a user a message enriched with images, and how to work with the state between messages.
 
 Possible additional extensions:
 
-* Use RootDialog as a signpost that will offer the user whether he wants to prefer to know the answer to the question or to learn the names.
+* Use root dialog as a router that will offer the user whether he wants to prefer to know the answer to the question or to learn the names.
 * Ensure that the photos do not recur (i.e. not to show the same person several times until they are in the queue next).
 * Load photos and people names dynamically, for example, from Office 365.
 * Store the user states in your own table or SQL Database
