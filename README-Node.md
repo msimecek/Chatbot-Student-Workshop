@@ -3,9 +3,11 @@
 typora-copy-images-to: images
 ---
 
-**This is the second variant of the original YesNo workshop, adjusted for Node.js.**
-
 In this workshop, you will learn how to create your own chatbot using  **Visual Studio Code**, **Node.js** and the **Microsoft Bot Framework**.
+
+> **There are two versions of this workshop**: you are currently reading the JavaScript one. If you're more of a C#/.NET person, switch to the [other one](README.md).
+>
+> English translation was kindly initiated by @laurelle.
 
 ## Assumptions
 
